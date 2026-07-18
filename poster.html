@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poster - Hệ thống hỗ trợ thông tin học tập cho sinh viên sử dụng AI Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe',
+                            300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6',
+                            600: '#2563eb', 700: '#1d4ed8', 800: '#1e3a5f',
+                            900: '#0f2440', 950: '#0a1628'
+                        },
+                        accent: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b' },
+                        success: { 400: '#4ade80', 500: '#22c55e' },
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --poster-width: 841mm;
+            --poster-height: 1189mm;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        .poster-container {
+            width: var(--poster-width);
+            min-height: var(--poster-height);
+            margin: 0 auto;
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Section Cards */
+        .section-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .section-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+        .section-header {
+            padding: 14px 22px;
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+        .section-body { padding: 20px 24px; }
+
+        /* Gradient headers */
+        .header-blue { background: linear-gradient(135deg, #1e3a5f, #2563eb); }
+        .header-teal { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+        .header-purple { background: linear-gradient(135deg, #581c87, #7c3aed); }
+        .header-orange { background: linear-gradient(135deg, #9a3412, #f97316); }
+        .header-green { background: linear-gradient(135deg, #166534, #22c55e); }
+        .header-indigo { background: linear-gradient(135deg, #312e81, #6366f1); }
+        .header-rose { background: linear-gradient(135deg, #881337, #f43f5e); }
+        .header-cyan { background: linear-gradient(135deg, #155e75, #06b6d4); }
+
+        /* Bullet points */
+        .bullet-list { list-style: none; padding: 0; }
+        .bullet-list li {
+            position: relative;
+            padding-left: 22px;
+            margin-bottom: 10px;
+            font-size: 17px;
+            line-height: 1.55;
+            color: #334155;
+        }
+        .bullet-list li::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 8px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+        }
+
+        /* Stats cards */
+        .stat-card {
+            text-align: center;
+            padding: 18px 14px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+            border: 1px solid #cbd5e1;
+        }
+        .stat-value {
+            font-size: 36px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+        .data-table th {
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .data-table td {
+            padding: 9px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 14.5px;
+        }
+        .data-table tr:nth-child(even) td { background: #f8fafc; }
+        .data-table tr:hover td { background: #eff6ff; }
+
+        /* Placeholder for images */
+        .image-placeholder {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border: 2px dashed #94a3b8;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            padding: 20px;
+            min-height: 200px;
+        }
+
+        /* Pipeline step */
+        .pipeline-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .step-number {
+            flex-shrink: 0;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+        .step-content h4 {
+            font-weight: 700;
+            font-size: 17px;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        .step-content p {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* Tag / badge */
+        .tech-badge {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 3px;
+            color: #1e3a5f;
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+        }
+
+        /* Download button */
+        #downloadBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        #downloadBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(37,99,235,0.45);
+        }
+
+        /* Contribution highlight */
+        .contribution-card {
+            padding: 18px 20px;
+            border-radius: 12px;
+            border-left: 5px solid;
+            background: #f8fafc;
+            margin-bottom: 14px;
+        }
+        .contribution-card h4 {
+            font-weight: 700;
+            font-size: 17px;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+        .contribution-card p {
+            font-size: 15px;
+            color: #475569;
+            line-height: 1.5;
+        }
+
+        /* Responsive scaling */
+        @media screen and (max-width: 900px) {
+            .poster-container {
+                width: 100vw;
+                transform-origin: top left;
+                transform: scale(calc(100vw / 841));
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            @page {
+                size: A0 portrait;
+                margin: 0;
+            }
+            body { background: white; }
+            #downloadBtn { display: none !important; }
+            .poster-container {
+                width: 841mm;
+                min-height: 1189mm;
+                margin: 0;
+                box-shadow: none;
+            }
+            .section-card { break-inside: avoid; }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Download Button -->
+<button id="downloadBtn" onclick="downloadPDF()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Tải xuống PDF
+</button>
+
+<div class="poster-container" id="poster">
+
+    <!-- ============================================================ -->
+    <!-- HEADER -->
+    <!-- ============================================================ -->
+    <div style="background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 40%, #2563eb 100%); padding: 44px 56px; position: relative; overflow: hidden;">
+        <!-- Decorative circles -->
+        <div style="position: absolute; top: -60px; right: -40px; width: 260px; height: 260px; border-radius: 50%; background: rgba(255,255,255,0.04);"></div>
+        <div style="position: absolute; bottom: -80px; right: 200px; width: 320px; height: 320px; border-radius: 50%; background: rgba(255,255,255,0.03);"></div>
+        <div style="position: absolute; top: 20px; left: -30px; width: 180px; height: 180px; border-radius: 50%; background: rgba(56,189,248,0.06);"></div>
+
+        <div style="display: flex; align-items: center; gap: 40px; position: relative; z-index: 2;">
+            <!-- Logo -->
+            <div style="flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+                <img src="./Logo PNG chất lượng/Logo Đơn (Full white).png" alt="Logo KHTN" style="height: 120px; object-fit: contain;">
+            </div>
+
+            <div style="flex: 1;">
+                <div style="color: rgba(255,255,255,0.7); font-size: 18px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">
+                    Trường Đại học Khoa học Tự nhiên — ĐHQG TP.HCM &nbsp;•&nbsp; Khoa Công nghệ Thông tin
+                </div>
+                <div style="color: rgba(255,255,255,0.5); font-size: 15px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px;">
+                    Đồ án tốt nghiệp cử nhân — Chương trình chuẩn
+                </div>
+                <h1 style="color: #ffffff; font-family: 'Merriweather', serif; font-size: 44px; font-weight: 900; line-height: 1.2; letter-spacing: 0.5px; margin-bottom: 14px;">
+                    HỆ THỐNG HỖ TRỢ THÔNG TIN HỌC TẬP<br>CHO SINH VIÊN SỬ DỤNG AI AGENTS
+                </h1>
+                <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                    <span style="display: inline-block; padding: 4px 14px; border-radius: 20px; background: rgba(56,189,248,0.2); color: #7dd3fc; font-size: 13px; font-weight: 600; border: 1px solid rgba(56,189,248,0.3);">Knowledge Graph</span>
+                    <span style="display: inline-block; padding: 4px 14px; border-radius: 20px; background: rgba(56,189,248,0.2); color: #7dd3fc; font-size: 13px; font-weight: 600; border: 1px solid rgba(56,189,248,0.3);">LightRAG</span>
+                    <span style="display: inline-block; padding: 4px 14px; border-radius: 20px; background: rgba(56,189,248,0.2); color: #7dd3fc; font-size: 13px; font-weight: 600; border: 1px solid rgba(56,189,248,0.3);">Multi-Agent</span>
+                    <span style="display: inline-block; padding: 4px 14px; border-radius: 20px; background: rgba(56,189,248,0.2); color: #7dd3fc; font-size: 13px; font-weight: 600; border: 1px solid rgba(56,189,248,0.3);">LangGraph</span>
+                    <span style="display: inline-block; padding: 4px 14px; border-radius: 20px; background: rgba(56,189,248,0.2); color: #7dd3fc; font-size: 13px; font-weight: 600; border: 1px solid rgba(56,189,248,0.3);">SHACL</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Author info -->
+        <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 2;">
+            <div>
+                <div style="color: rgba(255,255,255,0.55); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;">Nhóm sinh viên thực hiện</div>
+                <div style="color: rgba(255,255,255,0.9); font-size: 16px; font-weight: 500; line-height: 1.6;">
+                    <span style="font-weight: 700;">Nguyễn Chí Danh</span> – 22120048 &nbsp;•&nbsp;
+                    <span style="font-weight: 700;">Lý Trường Nam</span> – 22120218 &nbsp;•&nbsp;
+                    <span style="font-weight: 700;">Phạm Tấn Nghĩa</span> – 22120230<br>
+                    <span style="font-weight: 700;">Hà Gia Phúc</span> – 22120272 &nbsp;•&nbsp;
+                    <span style="font-weight: 700;">Nguyễn Trường Tân</span> – 22120326 &nbsp;•&nbsp;
+                    <span style="font-weight: 700;">Trần Nhật Tân</span> – 22120328
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <div style="color: rgba(255,255,255,0.55); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;">Giảng viên hướng dẫn</div>
+                <div style="color: rgba(255,255,255,0.9); font-size: 18px; font-weight: 700;">TS. Nguyễn Trần Minh Thư</div>
+                <div style="color: rgba(255,255,255,0.55); font-size: 14px; margin-top: 4px;">Bộ môn Hệ thống thông tin &nbsp;•&nbsp; Tp. HCM, 04/2026</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MAIN CONTENT -->
+    <!-- ============================================================ -->
+    <div style="padding: 36px 48px; display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 28px;">
+
+        <!-- ================= COLUMN 1 ================= -->
+        <div style="display: flex; flex-direction: column; gap: 28px;">
+
+            <!-- Đặt vấn đề -->
+            <div class="section-card">
+                <div class="section-header header-blue">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                    Đặt vấn đề
+                </div>
+                <div class="section-body">
+                    <ul class="bullet-list">
+                        <li>Sinh viên CNTT tại HCMUS phải đối mặt với lượng kiến thức lớn và rời rạc, phân tán trên nhiều hệ thống khác nhau.</li>
+                        <li>Các công cụ tìm kiếm thông thường không thể chỉ ra mối quan hệ giữa các môn học hay giải thích tính liên kết của kiến thức.</li>
+                        <li>Hệ thống hỗ trợ học vụ hiện tại chủ yếu dựa trên cổng thông tin tĩnh hoặc chatbot dựa quy tắc, gây phân mảnh thông tin.</li>
+                        <li>Các mô hình AI phổ biến đôi khi cung cấp thông tin không chính xác, không hiểu rõ quy định đặc thù của nhà trường.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Mục tiêu -->
+            <div class="section-card">
+                <div class="section-header header-teal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    Mục tiêu nghiên cứu
+                </div>
+                <div class="section-body">
+                    <div class="contribution-card" style="border-left-color: #0d9488;">
+                        <h4>① Xây dựng Đồ thị tri thức</h4>
+                        <p>Xây dựng Knowledge Graph từ kho dữ liệu học vụ của Khoa CNTT bằng LightRAG, kết hợp kiểm chứng cấu trúc bằng chuẩn SHACL.</p>
+                    </div>
+                    <div class="contribution-card" style="border-left-color: #0ea5e9;">
+                        <h4>② Kiến trúc Đa tác nhân</h4>
+                        <p>Phát triển hệ thống Multi-Agent trên LangGraph để xử lý truy vấn học tập phức tạp, tự động phân tích và phối hợp nhiều bước suy luận.</p>
+                    </div>
+                    <div class="contribution-card" style="border-left-color: #8b5cf6;">
+                        <h4>③ Đánh giá tự động</h4>
+                        <p>Xây dựng pipeline đánh giá kết hợp RAGAS và LLM-as-a-Judge để đo lường chất lượng hệ thống một cách khách quan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Đóng góp chính -->
+            <div class="section-card">
+                <div class="section-header header-purple">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Đóng góp chính
+                </div>
+                <div class="section-body">
+                    <ul class="bullet-list">
+                        <li><strong>Đồ thị tri thức kết hợp SHACL:</strong> Cơ chế kiểm chứng xác định (deterministic grounding) đảm bảo tính đúng đắn và liên kết chặt chẽ giữa các thực thể, giải pháp Entity Resolution cho ngữ cảnh học thuật tiếng Việt.</li>
+                        <li><strong>Kiến trúc Multi-Agent trên LangGraph:</strong> Hệ thống đa tác nhân tự động phân tích ý định, điều phối công cụ truy xuất (Local/Global/Hybrid) và phối hợp suy luận.</li>
+                        <li><strong>Khung đánh giá toàn diện:</strong> Kết hợp RAGAS (Faithfulness, Relevance, Correctness) với LLM-as-a-Judge, cho phép đo lường và tinh chỉnh chất lượng hệ thống khách quan.</li>
+                        <li><strong>Ứng dụng thực tiễn:</strong> Trợ lý ảo LearningPath phục vụ tra cứu học vụ, tư vấn lộ trình cá nhân hóa cho sinh viên Khoa CNTT.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Công nghệ sử dụng -->
+            <div class="section-card">
+                <div class="section-header header-cyan">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Công nghệ sử dụng
+                </div>
+                <div class="section-body" style="display: flex; flex-wrap: wrap; gap: 4px;">
+                    <span class="tech-badge">LightRAG</span>
+                    <span class="tech-badge">LangGraph</span>
+                    <span class="tech-badge">Qwen2.5-72B</span>
+                    <span class="tech-badge">MinerU</span>
+                    <span class="tech-badge">SHACL</span>
+                    <span class="tech-badge">MongoDB</span>
+                    <span class="tech-badge">Redis</span>
+                    <span class="tech-badge">NanoVectorDB</span>
+                    <span class="tech-badge">E5-Large</span>
+                    <span class="tech-badge">Playwright</span>
+                    <span class="tech-badge">React</span>
+                    <span class="tech-badge">FastAPI</span>
+                    <span class="tech-badge">RAGAS</span>
+                    <span class="tech-badge">Python</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= COLUMN 2 (CENTER) ================= -->
+        <div style="display: flex; flex-direction: column; gap: 28px;">
+
+            <!-- Kiến trúc hệ thống -->
+            <div class="section-card">
+                <div class="section-header header-indigo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                    Kiến trúc tổng thể hệ thống
+                </div>
+                <div class="section-body">
+                    <div class="image-placeholder" style="min-height: 300px; padding: 0; background: none; border: none;">
+                        <img src="./images/system_architecture_ver3.drawio.png" alt="Kiến trúc tổng thể" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    </div>
+                    <p style="font-size: 13px; color: #64748b; text-align: center; margin-top: 10px; font-style: italic;">Hình 1. Kiến trúc tổng thể hệ thống hỗ trợ học tập thông minh</p>
+                </div>
+            </div>
+
+            <!-- Quy trình xử lý dữ liệu -->
+            <div class="section-card">
+                <div class="section-header header-orange">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    Quy trình xử lý dữ liệu & Xây dựng đồ thị
+                </div>
+                <div class="section-body">
+                    <div class="pipeline-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Tiền xử lý tài liệu (MinerU)</h4>
+                            <p>Bóc tách PDF/Office/Web bằng VLM, OCR và MFR. Chuyển đổi tất cả về định dạng Markdown đồng nhất, kiểm tra trùng lặp bằng MD5 Hash.</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Phân mảnh kép (Dual Chunking)</h4>
+                            <p><strong>Fixed-size:</strong> 1200 token + overlap 100 token → phục vụ trích xuất đồ thị.<br>
+                            <strong>Hierarchical:</strong> Phân cấp đa phương thức (Section/Table/Figure) → phục vụ truy xuất RAG chính xác.</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Trích xuất thực thể & Quan hệ</h4>
+                            <p>Mô hình Quadruple (Source, Target, Keywords, Description). Cơ chế Gleaning thu nhặt bổ sung. Dynamic Prompt Flow theo 4 miền tri thức.</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Kiểm chứng SHACL & Entity Resolution</h4>
+                            <p>Đối chiếu bằng chứng xác định (exact + fuzzy ≥ 0.9). Phân giải thực thể 2 giai đoạn: Candidate Retrieval → LLM Decision. Quan hệ SAME_AS bảo toàn provenance.</p>
+                        </div>
+                    </div>
+
+                    <div class="image-placeholder" style="min-height: 200px; margin-top: 12px; padding: 0; background: none; border: none;">
+                        <img src="./images/storage_deployment_overview_nobg.png" alt="Quy trình xử lý dữ liệu" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    </div>
+                    <p style="font-size: 13px; color: #64748b; text-align: center; margin-top: 8px; font-style: italic;">Hình 2. Quy trình tổng quát từ văn bản thô đến đồ thị tri thức</p>
+                </div>
+            </div>
+
+            <!-- Kiến trúc đa tác nhân -->
+            <div class="section-card">
+                <div class="section-header header-rose">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Kiến trúc điều phối đa tác nhân
+                </div>
+                <div class="section-body">
+                    <p style="font-size: 15.5px; color: #475569; line-height: 1.55; margin-bottom: 16px;">
+                        Hệ thống sử dụng <strong>LangGraph</strong> để điều phối 5 thành phần xử lý chuyên biệt theo đồ thị trạng thái có hướng, với luồng tuyến tính và tất định nhằm tối ưu độ trễ:
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+                        <div style="padding: 14px; border-radius: 10px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #93c5fd;">
+                            <div style="font-weight: 700; font-size: 15px; color: #1e40af; margin-bottom: 4px;">🔍 Analyze Agent</div>
+                            <div style="font-size: 13.5px; color: #475569;">Phân loại ý định, viết lại truy vấn, trích xuất từ khóa 2 mức, kiểm duyệt nội dung</div>
+                        </div>
+                        <div style="padding: 14px; border-radius: 10px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac;">
+                            <div style="font-weight: 700; font-size: 15px; color: #166534; margin-bottom: 4px;">⚡ Generator Agent</div>
+                            <div style="font-size: 13.5px; color: #475569;">Dựng ngữ cảnh sinh: retrieve / direct_answer / reject</div>
+                        </div>
+                        <div style="padding: 14px; border-radius: 10px; background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1px solid #fbbf24;">
+                            <div style="font-weight: 700; font-size: 15px; color: #92400e; margin-bottom: 4px;">📝 Summarizer Agent</div>
+                            <div style="font-size: 13.5px; color: #475569;">Nén lịch sử hội thoại > 4 lượt thành 1-2 câu súc tích</div>
+                        </div>
+                        <div style="padding: 14px; border-radius: 10px; background: linear-gradient(135deg, #fdf2f8, #fce7f3); border: 1px solid #f9a8d4;">
+                            <div style="font-weight: 700; font-size: 15px; color: #9d174d; margin-bottom: 4px;">🧠 Long-term Memory</div>
+                            <div style="font-size: 13.5px; color: #475569;">Quản lý hồ sơ người dùng bền vững trên MongoDB</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8fafc; border-radius: 10px; padding: 14px 18px; border: 1px solid #e2e8f0;">
+                        <div style="font-weight: 700; font-size: 15px; color: #1e293b; margin-bottom: 8px;">Luồng điều phối tuần tự:</div>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; color: #475569;">
+                            <span style="padding: 5px 12px; border-radius: 6px; background: #1e3a5f; color: white; font-weight: 600;">Analyzer</span>
+                            <span style="color: #94a3b8;">→</span>
+                            <span style="padding: 5px 12px; border-radius: 6px; background: #0d9488; color: white; font-weight: 600;">Prepare Context</span>
+                            <span style="color: #94a3b8;">→</span>
+                            <span style="padding: 5px 12px; border-radius: 6px; background: #7c3aed; color: white; font-weight: 600;">Generate</span>
+                            <span style="color: #94a3b8;">→</span>
+                            <span style="padding: 5px 12px; border-radius: 6px; background: #dc2626; color: white; font-weight: 600;">(Update Memory)</span>
+                            <span style="color: #94a3b8;">→</span>
+                            <span style="padding: 5px 12px; border-radius: 6px; background: #334155; color: white; font-weight: 600;">END</span>
+                        </div>
+                    </div>
+
+                    <div class="image-placeholder" style="min-height: 180px; margin-top: 14px; padding: 0; background: none; border: none;">
+                        <img src="./images/AI_Agent.png" alt="Quy trình điều phối đa tác nhân" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    </div>
+                    <p style="font-size: 13px; color: #64748b; text-align: center; margin-top: 8px; font-style: italic;">Hình 3. Quy trình điều phối đa tác nhân và luồng truy vấn</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= COLUMN 3 ================= -->
+        <div style="display: flex; flex-direction: column; gap: 28px;">
+
+            <!-- Kết quả đồ thị tri thức -->
+            <div class="section-card">
+                <div class="section-header header-green">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Kết quả đánh giá đồ thị tri thức
+                </div>
+                <div class="section-body">
+                    <!-- Stats grid -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px;">
+                        <div class="stat-card">
+                            <div class="stat-value">3.808</div>
+                            <div class="stat-label">Nút (Nodes)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">3.775</div>
+                            <div class="stat-label">Cạnh (Edges)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">0.8%</div>
+                            <div class="stat-label">Nút mồ côi</div>
+                        </div>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tiêu chí</th>
+                                <th>N=50</th>
+                                <th>N=400</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Độ phủ văn bản (Chunk Coverage)</td>
+                                <td colspan="2" style="text-align: center; font-weight: 700; color: #166534;">96.1%</td>
+                            </tr>
+                            <tr>
+                                <td>Groundedness Precision</td>
+                                <td style="font-weight: 700; color: #166534;">98.00%</td>
+                                <td style="font-weight: 700; color: #166534;">94.08%</td>
+                            </tr>
+                            <tr>
+                                <td>Tỷ lệ ảo giác</td>
+                                <td>2.0%</td>
+                                <td>5.0%</td>
+                            </tr>
+                            <tr>
+                                <td>CQ Pass Rate (Ontology)</td>
+                                <td colspan="2" style="text-align: center; font-weight: 600;">71.4%</td>
+                            </tr>
+                            <tr>
+                                <td>Lỗi thiết kế nghiêm trọng</td>
+                                <td colspan="2" style="text-align: center; font-weight: 700; color: #166534;">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Kết quả RAG -->
+            <div class="section-card">
+                <div class="section-header header-blue">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    Kết quả chất lượng RAG (159 câu hỏi)
+                </div>
+                <div class="section-body">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px;">
+                        <div class="stat-card">
+                            <div class="stat-value">0.721</div>
+                            <div class="stat-label">BERTScore F1</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">0.650</div>
+                            <div class="stat-label">Answer Correctness</div>
+                        </div>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Chỉ số</th><th>Trung bình</th><th>Trung vị</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Token-level F1</td><td>0.297</td><td>0.258</td></tr>
+                            <tr><td>ROUGE-L</td><td>0.236</td><td>0.185</td></tr>
+                            <tr><td>BERTScore F1</td><td style="font-weight: 700; color: #1e40af;">0.721</td><td>0.717</td></tr>
+                            <tr><td>Answer Correctness (RAGAS)</td><td style="font-weight: 700; color: #1e40af;">0.650</td><td>0.641</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="font-size: 13px; color: #64748b; margin-top: 10px; line-height: 1.5;">
+                        <em>Khoảng cách BERTScore (0.721) vs Token F1 (0.297) cho thấy hệ thống truyền đạt đúng nội dung tri thức bằng cách diễn đạt khác với đáp án chuẩn — đặc trưng của hệ thống RAG sinh văn bản tự do.</em>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Hiệu năng hệ thống -->
+            <div class="section-card">
+                <div class="section-header header-orange">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Hiệu năng & Đánh giá người dùng
+                </div>
+                <div class="section-body">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px;">
+                        <div class="stat-card">
+                            <div class="stat-value">7.3s</div>
+                            <div class="stat-label">Độ trễ TB</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">25-40</div>
+                            <div class="stat-label">Người dùng ĐT</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">32</div>
+                            <div class="stat-label">Phản hồi khảo sát</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f0fdf4; border-radius: 10px; padding: 14px; border: 1px solid #86efac; margin-bottom: 12px;">
+                        <div style="font-weight: 700; font-size: 15px; color: #166534; margin-bottom: 6px;">📊 Kết quả khảo sát người dùng</div>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="font-size: 14px; color: #334155; margin-bottom: 5px; padding-left: 16px; position: relative;">
+                                <span style="position: absolute; left: 0;">✅</span>
+                                <strong>76.1%</strong> đánh giá trả lời đúng trọng tâm (4-5 điểm)
+                            </li>
+                            <li style="font-size: 14px; color: #334155; margin-bottom: 5px; padding-left: 16px; position: relative;">
+                                <span style="position: absolute; left: 0;">✅</span>
+                                <strong>81%</strong> đánh giá cung cấp thông tin chuyên sâu đầy đủ
+                            </li>
+                            <li style="font-size: 14px; color: #334155; margin-bottom: 5px; padding-left: 16px; position: relative;">
+                                <span style="position: absolute; left: 0;">✅</span>
+                                <strong>72.8%</strong> hài lòng với giao diện UI/UX (4-5 điểm)
+                            </li>
+                            <li style="font-size: 14px; color: #334155; padding-left: 16px; position: relative;">
+                                <span style="position: absolute; left: 0;">✅</span>
+                                <strong>72.7%</strong> hài lòng tổng thể (4-5 điểm)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="image-placeholder" style="min-height: 130px; padding: 0; background: none; border: none;">
+                        <img src="./images/AI_Chat.png" alt="Giao diện ứng dụng LearningPath" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    </div>
+                    <p style="font-size: 13px; color: #64748b; text-align: center; margin-top: 8px; font-style: italic;">Hình 4. Giao diện trợ lý ảo LearningPath</p>
+                </div>
+            </div>
+
+            <!-- Kết luận -->
+            <div class="section-card">
+                <div class="section-header header-indigo">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    Kết luận & Hướng phát triển
+                </div>
+                <div class="section-body">
+                    <div style="margin-bottom: 14px;">
+                        <div style="font-weight: 700; font-size: 16px; color: #1e293b; margin-bottom: 6px;">Kết quả đạt được:</div>
+                        <ul class="bullet-list">
+                            <li>Số hóa thành công kho dữ liệu học vụ phức tạp thành Đồ thị tri thức có khả năng suy luận.</li>
+                            <li>Hệ thống đa tác nhân thông minh tự động chọn lọc công cụ phù hợp với từng dạng câu hỏi.</li>
+                            <li>Pipeline đánh giá tự động LLM-as-a-Judge + RAGAS đo lường chất lượng khách quan.</li>
+                        </ul>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #eff6ff, #e0e7ff); border-radius: 10px; padding: 14px; border: 1px solid #a5b4fc;">
+                        <div style="font-weight: 700; font-size: 15px; color: #3730a3; margin-bottom: 6px;">🔮 Hướng phát triển:</div>
+                        <ul style="list-style: none; padding: 0; margin: 0; font-size: 14px; color: #475569;">
+                            <li style="margin-bottom: 4px;">• Truy vấn đa phương tiện (Multimodal RAG)</li>
+                            <li style="margin-bottom: 4px;">• Mở rộng bộ nhớ ngữ cảnh bằng Knowledge Graph</li>
+                            <li style="margin-bottom: 4px;">• Module lộ trình học tập cá nhân hóa</li>
+                            <li>• Diễn đàn học tập cộng đồng với AI Summarizer</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================================ -->
+    <div style="background: linear-gradient(135deg, #0a1628, #1e3a5f); padding: 22px 56px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="color: rgba(255,255,255,0.6); font-size: 14px;">
+            Đồ án tốt nghiệp Cử nhân — Khoa Công nghệ Thông tin — Trường ĐH Khoa học Tự nhiên, ĐHQG TP.HCM — Tháng 04/2026
+        </div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+            <span style="color: rgba(255,255,255,0.5); font-size: 13px;">GVHD: TS. Nguyễn Trần Minh Thư</span>
+            <span style="color: rgba(255,255,255,0.3);">|</span>
+            <span style="color: rgba(255,255,255,0.5); font-size: 13px;">Bộ môn Hệ thống thông tin</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- html2pdf.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    // Initialize Lucide icons
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+
+    function downloadPDF() {
+        const btn = document.getElementById('downloadBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Đang xuất PDF...';
+        btn.disabled = true;
+
+        const element = document.getElementById('poster');
+
+        if (typeof html2pdf !== 'undefined') {
+            const opt = {
+                margin: 0,
+                filename: 'Poster_DATN_AI_Agents_HocTap.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true,
+                    logging: false,
+                    windowWidth: element.scrollWidth,
+                    windowHeight: element.scrollHeight
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a0',
+                    orientation: 'portrait'
+                },
+                pagebreak: { mode: 'avoid-all' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch(() => {
+                fallbackPrint();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
+        } else {
+            fallbackPrint();
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    function fallbackPrint() {
+        window.print();
+    }
+</script>
+
+<style>
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+</body>
+</html>
